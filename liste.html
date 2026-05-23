@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Müşteri Listesi - Ceylanlar</title>
+    <style>
+        :root {
+            --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+            --bg: #f5f5f7;
+            --card: #fff;
+            --text: #1d1d1f;
+            --text2: #86868b;
+            --blue: #0071e3;
+            --light: #f5f5f7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .container { max-width: 430px; margin: 0 auto; min-height: 100vh; }
+
+        .sticky-header {
+            position: sticky; top: 0; z-index: 30;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 0 0 20px 20px;
+            padding: 14px 16px 10px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+        }
+        .brand-row { display: flex; align-items: flex-start; justify-content: space-between; padding-bottom: 12px; }
+        .brand-logo {
+            width: 38px; height: 38px; border-radius: 11px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 700; font-size: 17px; flex-shrink: 0;
+        }
+        .brand-info h1 { font-size: 17px; font-weight: 700; color: var(--text); }
+        .brand-info p { font-size: 10px; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
+
+        .list-title-row {
+            display: flex; align-items: center; gap: 8px; padding: 4px 0 0;
+        }
+        .list-title-row .icon-circle {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--blue);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .list-title-row h2 { font-size: 15px; font-weight: 600; }
+        .list-title-row .code { font-size: 11px; color: var(--text2); margin-left: auto; }
+
+        .content { padding: 16px 16px 100px; }
+
+        .customer-card {
+            background: var(--card); border-radius: 22px; padding: 18px;
+            margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            animation: fadeUp 0.35s ease forwards;
+        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .customer-row { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--blue); display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 18px; font-weight: 600; flex-shrink: 0;
+        }
+        .customer-info { flex: 1; }
+        .customer-name { font-size: 16px; font-weight: 600; }
+        .customer-phone { font-size: 12px; color: var(--text2); }
+        .customer-time {
+            font-size: 11px; color: var(--text2);
+            padding: 4px 8px; background: var(--light);
+            border-radius: 10px; white-space: nowrap;
+        }
+
+        .items-header {
+            font-size: 15px; font-weight: 600; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .badge {
+            font-size: 11px; color: var(--text2); font-weight: 400;
+            padding: 2px 8px; background: var(--light); border-radius: 8px;
+        }
+
+        .model-card {
+            background: var(--card); border-radius: 22px; padding: 18px;
+            margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            animation: fadeUp 0.35s ease forwards; opacity: 0;
+        }
+        .model-header {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .model-header h3 { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+        .model-header .sub { font-size: 12px; color: var(--text2); font-weight: 400; }
+
+        .colors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 6px;
+        }
+        .color-item {
+            border-radius: 10px; overflow: hidden;
+            aspect-ratio: 1;
+            background: #e5e5ea;
+        }
+        .color-item img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .bottombar {
+            position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+            z-index: 40; width: calc(min(430px, 100vw) - 28px);
+            animation: barUp 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes barUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        .bottombar-inner {
+            display: flex; align-items: center; justify-content: center;
+            padding: 10px 14px; border-radius: 18px;
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 0.5px solid rgba(0,0,0,0.04);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+        }
+        .bb-wa-btn {
+            display: flex; align-items: center; justify-content: center;
+            gap: 6px; padding: 10px 20px; border-radius: 999px;
+            background: #1d1d1f; color: #fff;
+            font-size: 13px; font-weight: 500; border: none;
+            cursor: pointer; font-family: var(--font);
+            transition: all 0.2s; width: 100%;
+        }
+        .bb-wa-btn:active { transform: scale(0.97); }
+
+        .send-icon-wrap { position: relative; width: 16px; height: 16px; }
+        .send-icon-wrap svg { position: absolute; top: 0; left: 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sticky-header">
+        <div class="brand-row">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="brand-logo">C</div>
+                <div class="brand-info">
+                    <h1>Ceylanlar</h1>
+                    <p>Dijital Showroom</p>
+                </div>
+            </div>
+        </div>
+        <div class="list-title-row">
+            <div class="icon-circle">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </div>
+            <h2>Müşteri Listesi</h2>
+            <span class="code" id="listCode">#abc123</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="customer-card">
+            <div class="customer-row">
+                <div class="avatar" id="customerInitial">M</div>
+                <div class="customer-info">
+                    <div class="customer-name" id="customerName">Mehmet Demir</div>
+                    <div class="customer-phone" id="customerPhone">+90 541 555 12 12</div>
+                </div>
+                <div class="customer-time" id="listTime">2 saat önce</div>
+            </div>
+        </div>
+
+        <div class="items-header">
+            📋 İlgilendiği Ürünler
+            <span class="badge" id="itemCount">3 ürün</span>
+        </div>
+
+        <div id="itemsContainer"></div>
+    </div>
+
+    <div class="bottombar">
+        <div class="bottombar-inner">
+            <button class="bb-wa-btn" onclick="contactCustomer()">
+                <div class="send-icon-wrap">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </div>
+                WhatsApp ile Yanıtla
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+const listData = {
+    listCode: "abc123def456",
+    customer: { name: "Mehmet Demir", phone: "905415551212", date: new Date(Date.now() - 2*60*60*1000) },
+    items: [
+        {
+            code: "AYK-001", model: "Luna Slingback", brand: "Luna", size: "36-40",
+            colors: [
+                "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=200&h=200&fit=crop"
+            ]
+        },
+        {
+            code: "AYK-002", model: "Nova Flat", brand: "Nova", size: "35-39",
+            colors: [
+                "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop"
+            ]
+        },
+        {
+            code: "AYK-004", model: "Aura Boot", brand: "Aura", size: "36-41",
+            colors: [
+                "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1584735175097-719d848f8449?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1514989940723-e8e51635b782?w=200&h=200&fit=crop"
+            ]
+        }
+    ]
+};
+
+function render() {
+    document.getElementById('listCode').textContent = '#' + listData.listCode.slice(0, 6);
+    document.getElementById('customerInitial').textContent = listData.customer.name.charAt(0).toUpperCase();
+    document.getElementById('customerName').textContent = listData.customer.name;
+    document.getElementById('customerPhone').textContent = formatPhone(listData.customer.phone);
+    document.getElementById('listTime').textContent = timeAgo(listData.customer.date);
+    document.getElementById('itemCount').textContent = listData.items.length + ' ürün';
+
+    document.getElementById('itemsContainer').innerHTML = listData.items.map((item, i) => `
+        <div class="model-card" style="animation-delay:${i*0.05}s">
+            <div class="model-header">
+                <div>
+                    <h3>${item.model}</h3>
+                    <p class="sub">${item.code} · ${item.brand} · ${item.size}</p>
+                </div>
+            </div>
+            <div class="colors-grid">
+                ${item.colors.map(img => `<div class="color-item"><img src="${img}" alt="" loading="lazy"></div>`).join('')}
+            </div>
+        </div>
+    `).join('');
+}
+
+function formatPhone(p) { return p.replace(/(\d{2})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 $2 $3 $4 $5'); }
+function timeAgo(d) { let m = Math.floor((Date.now()-d)/60000); if (m<60) return m+' dk önce'; let h = Math.floor(m/60); if (h<24) return h+' saat önce'; return Math.floor(h/24)+' gün önce'; }
+
+function contactCustomer() {
+    let msg = `Merhaba ${listData.customer.name},\n\nİlgilendiğiniz ürünlerle ilgili yazmıştınız.\n\nSize nasıl yardımcı olabilirim?`;
+    window.open(`https://wa.me/${listData.customer.phone}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+render();
+</script>
+</body>
+</html>
