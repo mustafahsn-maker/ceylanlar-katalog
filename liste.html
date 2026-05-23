@@ -112,9 +112,18 @@
             border-radius: 10px; overflow: hidden;
             aspect-ratio: 1;
             background: #e5e5ea;
+            position: relative;
         }
         .color-item img {
             width: 100%; height: 100%; object-fit: cover;
+        }
+        .color-item .mini-tick {
+            position: absolute;
+            bottom: 4px; right: 4px;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: var(--blue);
+            display: flex; align-items: center; justify-content: center;
         }
 
         .bottombar {
@@ -205,31 +214,24 @@
 let urlParams = new URLSearchParams(window.location.search);
 let listCode = urlParams.get('code');
 
-// localStorage'dan liste verisini çek
+// localStorage'dan veriyi çek
 let savedData = localStorage.getItem('list_' + listCode);
 let listData;
 
 if (savedData) {
     listData = JSON.parse(savedData);
 } else {
-    // Demo yedek veri
     listData = {
         listCode: listCode || "demo123456",
         customer: { name: "Mehmet Demir", phone: "905415551212", date: new Date(Date.now() - 2*60*60*1000).toISOString() },
         items: [
             {
                 code: "AYK-001", model: "Luna Slingback", brand: "Luna", size: "36-40",
-                colors: [
-                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop",
-                    "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=200&h=200&fit=crop",
-                    "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=200&h=200&fit=crop"
-                ]
-            },
-            {
-                code: "AYK-002", model: "Nova Flat", brand: "Nova", size: "35-39",
-                colors: [
-                    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=200&h=200&fit=crop",
-                    "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop"
+                selectedColors: ["Siyah"],
+                allColors: [
+                    { name: "Siyah", imageUrl: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop", selected: true },
+                    { name: "Bej", imageUrl: "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=200&h=200&fit=crop", selected: false },
+                    { name: "Kırmızı", imageUrl: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=200&h=200&fit=crop", selected: false }
                 ]
             }
         ]
@@ -245,19 +247,28 @@ function render() {
     document.getElementById('listTime').textContent = timeAgo(d);
     document.getElementById('itemCount').textContent = listData.items.length + ' ürün';
 
-    document.getElementById('itemsContainer').innerHTML = listData.items.map((item, i) => `
-        <div class="model-card" style="animation-delay:${i*0.05}s">
-            <div class="model-header">
-                <div>
-                    <h3>${item.model}</h3>
-                    <p class="sub">${item.code} · ${item.brand} · ${item.size}</p>
+    if (listData.items.length === 0) {
+        document.getElementById('itemsContainer').innerHTML = '<p style="text-align:center;color:var(--text2);padding:40px;">Henüz ürün seçilmedi</p>';
+    } else {
+        document.getElementById('itemsContainer').innerHTML = listData.items.map((item, i) => `
+            <div class="model-card" style="animation-delay:${i*0.05}s">
+                <div class="model-header">
+                    <div>
+                        <h3>${item.model}</h3>
+                        <p class="sub">${item.code} · ${item.brand} · ${item.size}</p>
+                    </div>
+                </div>
+                <div class="colors-grid">
+                    ${item.allColors.map(c => `
+                        <div class="color-item">
+                            <img src="${c.imageUrl}" alt="${c.name}" loading="lazy">
+                            ${c.selected ? `<div class="mini-tick"><svg width="10" height="7" viewBox="0 0 14 10" fill="none"><path d="M1 5L5 9L13 1" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
+                        </div>
+                    `).join('')}
                 </div>
             </div>
-            <div class="colors-grid">
-                ${item.colors.map(img => `<div class="color-item"><img src="${img}" alt="" loading="lazy"></div>`).join('')}
-            </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
 }
 
 function formatPhone(p) { 
@@ -272,10 +283,9 @@ function timeAgo(d) {
     if (h<24) return h+' saat önce'; 
     return Math.floor(h/24)+' gün önce'; 
 }
-
 function contactCustomer() {
-    let msg = `Merhaba ${listData.customer.name || 'Müşteri'},\n\nİlgilendiğiniz ürünlerle ilgili yazmıştınız.\n\nSize nasıl yardımcı olabilirim?`;
     let phone = listData.customer.phone || '905383573785';
+    let msg = `Merhaba ${listData.customer.name || 'Müşteri'},\n\nİlgilendiğiniz ürünlerle ilgili yazmıştınız.\n\nSize nasıl yardımcı olabilirim?`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
