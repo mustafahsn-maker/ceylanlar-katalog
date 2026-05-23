@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ceylanlar - Dijital Showroom</title>
+    <title>Lamasat Ayakkabı - Dijital Showroom</title>
     <style>
         :root {
             --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
@@ -19,7 +19,8 @@
         .brand-info h1 { font-size:17px; font-weight:700; color:var(--text); }
         .brand-info p { font-size:10px; color:var(--text2); letter-spacing:1px; text-transform:uppercase; font-weight:500; }
 
-        .contact-btn { width:38px; height:38px; border-radius:50%; background:#f5f5f7; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+        .contact-btn { width:40px; height:40px; border-radius:50%; background:#f5f5f7; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; flex-shrink:0; }
+        .contact-btn svg { width:20px; height:20px; }
         .contact-btn:active { transform:scale(0.92); }
 
         .search-wrap { position:relative; transition:transform 0.25s; }
@@ -119,11 +120,11 @@
     <div class="sticky-header">
         <div class="brand-row">
             <div style="display:flex; align-items:center; gap:10px;">
-                <div class="brand-logo">C</div>
-                <div class="brand-info"><h1>Ceylanlar</h1><p>Dijital Showroom</p></div>
+                <div class="brand-logo">L</div>
+                <div class="brand-info"><h1>Lamasat Ayakkabı</h1><p>Dijital Showroom</p></div>
             </div>
-            <button class="contact-btn" onclick="contactSeller()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85 19.5 19.5 0 0 1 5.19 12.85 19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 2.18-2.18h3a2 2 0 0 1 2 1.72c.127.96.362 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/><polyline points="15 3 21 3 21 9"/><line x1="21" y1="3" x2="14" y2="10"/></svg>
+            <button class="contact-btn" onclick="callSeller()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             </button>
         </div>
         <div class="search-wrap" id="searchWrap">
@@ -146,7 +147,6 @@
             </div>
             <div class="bb-btns">
                 <button class="bb-btn bb-btn-list" onclick="openList()">
-                    <!-- list.clipboard ikonu -->
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
                     Seçtiklerim
                 </button>
@@ -170,32 +170,32 @@
 
 <script>
 const models = [
-    { id: 1, modelName: 'Luna Slingback', brand: 'Luna', sizeRange: '36-40', tags: ['Yaz','Topuklu'], colors: [
+    { id: 1, modelName: 'Luna Slingback', brand: 'Luna', sizeRange: '36-40', code: 'AYK-001', tags: ['Yaz','Topuklu'], colors: [
         { id: 1, name: 'Siyah', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop' },
         { id: 2, name: 'Bej', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&h=400&fit=crop' },
         { id: 3, name: 'Kırmızı', inStock: false, imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=400&fit=crop' }
     ]},
-    { id: 2, modelName: 'Nova Flat', brand: 'Nova', sizeRange: '35-39', tags: ['Günlük','Düz'], colors: [
+    { id: 2, modelName: 'Nova Flat', brand: 'Nova', sizeRange: '35-39', code: 'AYK-002', tags: ['Günlük','Düz'], colors: [
         { id: 4, name: 'Beyaz', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=400&fit=crop' },
         { id: 5, name: 'Lacivert', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop' }
     ]},
-    { id: 3, modelName: 'Vega Sport', brand: 'Vega', sizeRange: '40-45', tags: ['Spor','Erkek'], colors: [
+    { id: 3, modelName: 'Vega Sport', brand: 'Vega', sizeRange: '40-45', code: 'AYK-003', tags: ['Spor','Erkek'], colors: [
         { id: 6, name: 'Siyah', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1539185441755-769473a23570?w=400&h=400&fit=crop' }
     ]},
-    { id: 4, modelName: 'Aura Boot', brand: 'Aura', sizeRange: '36-41', tags: ['Kış','Bot'], colors: [
+    { id: 4, modelName: 'Aura Boot', brand: 'Aura', sizeRange: '36-41', code: 'AYK-004', tags: ['Kış','Bot'], colors: [
         { id: 7, name: 'Kahverengi', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400&h=400&fit=crop' },
         { id: 8, name: 'Siyah', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1584735175097-719d848f8449?w=400&h=400&fit=crop' },
         { id: 9, name: 'Bordo', inStock: false, imageUrl: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400&h=400&fit=crop' },
         { id: 10, name: 'Yeşil', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1514989940723-e8e51635b782?w=400&h=400&fit=crop' }
     ]},
-    { id: 5, modelName: 'Zara Summer', brand: 'Zara', sizeRange: '36-40', tags: ['Yaz','Spor','İndirim'], colors: [
+    { id: 5, modelName: 'Zara Summer', brand: 'Zara', sizeRange: '36-40', code: 'AYK-005', tags: ['Yaz','Spor','İndirim'], colors: [
         { id: 11, name: 'Beyaz', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400&h=400&fit=crop' },
         { id: 12, name: 'Krem', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=400&h=400&fit=crop' },
         { id: 13, name: 'Pembe', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400&h=400&fit=crop' },
         { id: 14, name: 'Mavi', inStock: false, imageUrl: 'https://images.unsplash.com/photo-1597045566677-8cf032ed6634?w=400&h=400&fit=crop' },
         { id: 15, name: 'Yeşil', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop' }
     ]},
-    { id: 6, modelName: 'Mango Classic', brand: 'Mango', sizeRange: '38-42', tags: ['Klasik','Günlük'], colors: [
+    { id: 6, modelName: 'Mango Classic', brand: 'Mango', sizeRange: '38-42', code: 'AYK-006', tags: ['Klasik','Günlük'], colors: [
         { id: 16, name: 'Siyah', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&h=400&fit=crop' },
         { id: 17, name: 'Beyaz', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=400&fit=crop' },
         { id: 18, name: 'Gri', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=400&fit=crop' },
@@ -274,76 +274,42 @@ function openList() {
     document.getElementById('popupOverlay').style.display = 'block'; document.getElementById('popup').style.display = 'block';
 }
 function closeList() { document.getElementById('popupOverlay').style.display = 'none'; document.getElementById('popup').style.display = 'none'; render(); }
-function contactSeller() { window.open('https://wa.me/905383573785?text=Merhaba%20Ceylanlar%2C%20ürünleriniz%20hakkında%20bilgi%20almak%20istiyorum.', '_blank'); }
-function sendWhatsApp() {
-    let btn = document.getElementById('sendBtn');
-    if (btn.classList.contains('sent')) return;
-    btn.classList.add('sent');
-    
-    let items = models.flatMap(m => m.colors.filter(c => selected.has(c.id)).map(c => ({ model:m, color:c })));
+function callSeller() { window.location.href = 'tel:905383573785'; }
 
-    // Benzersiz liste kodu
+function sendWhatsApp() {
+    let btn = document.getElementById('sendBtn'); if (btn.classList.contains('sent')) return;
+    let items = models.flatMap(m => m.colors.filter(c => selected.has(c.id)).map(c => ({ model:m, color:c })));
     let listCode = generateListCode();
-    
-    // Seçilen renkleri modele göre grupla (TEKİLLEŞTİR)
     let modelMap = new Map();
     items.forEach(({model, color}) => {
         if (!modelMap.has(model.id)) {
             modelMap.set(model.id, {
-                code: model.code || model.modelName,
-                model: model.modelName,
-                brand: model.brand,
-                size: model.sizeRange,
+                code: model.code || model.modelName, model: model.modelName, brand: model.brand, size: model.sizeRange,
                 selectedColors: [],
                 allColors: model.colors.filter(c => c.inStock).map(c => ({
-                    name: c.name,
-                    imageUrl: c.imageUrl || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop',
-                    selected: selected.has(c.id)
+                    name: c.name, imageUrl: c.imageUrl || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop', selected: selected.has(c.id)
                 }))
             });
         }
         modelMap.get(model.id).selectedColors.push(color.name);
     });
-    
     let uniqueItems = Array.from(modelMap.values());
-    
-    // Liste verisini oluştur
-    let listData = {
-        listCode: listCode,
-        customer: { name: "Müşteri", phone: "", date: new Date().toISOString() },
-        items: uniqueItems
-    };
-    
-    // localStorage'a kaydet
+    let listData = { listCode: listCode, customer: { name: "Müşteri", phone: "", date: new Date().toISOString() }, items: uniqueItems };
     localStorage.setItem('list_' + listCode, JSON.stringify(listData));
-    
-    // Liste linkini oluştur
     let baseUrl = window.location.href.replace('katalog.html', '');
     let listUrl = baseUrl + 'liste.html?code=' + listCode;
-    
-    // Mesaj
     let message;
     if (uniqueItems.length <= 3) {
         let text = uniqueItems.map(i => `• ${i.model} (${i.brand}, ${i.size})`).join('\n');
-        message = `Merhaba,\n\nŞu ürünlerle ilgileniyorum:\n\n${text}\n\n${listUrl}`;
+        message = `Merhaba Lamasat Ayakkabı,\n\nŞu ürünlerle ilgileniyorum:\n\n${text}\n\n${listUrl}`;
     } else {
-        message = `Merhaba,\n\n${uniqueItems.length} ürünle ilgileniyorum. Listeye göz atar mısınız?\n\n${listUrl}`;
+        message = `Merhaba Lamasat Ayakkabı,\n\n${uniqueItems.length} ürünle ilgileniyorum. Listeye göz atar mısınız?\n\n${listUrl}`;
     }
-    
-    setTimeout(() => {
-        window.open('https://wa.me/905383573785?text=' + encodeURIComponent(message), '_blank');
-        setTimeout(() => { btn.classList.remove('sent'); }, 2000);
-    }, 500);
+    btn.classList.add('sent');
+    setTimeout(() => { window.open('https://wa.me/905383573785?text=' + encodeURIComponent(message), '_blank'); setTimeout(() => { btn.classList.remove('sent'); }, 2000); }, 500);
 }
+function generateListCode() { let chars = 'abcdefghijklmnopqrstuvwxyz0123456789'; let code = ''; for (let i=0; i<12; i++) code += chars.charAt(Math.floor(Math.random()*chars.length)); return code; }
 
-function generateListCode() {
-    let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let code = '';
-    for (let i = 0; i < 12; i++) {
-        code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
-}
 (function() { let s = document.getElementById('bbSlider'); let h = ''; for (let i=0; i<=20; i++) h += `<div class="bb-num-item">${i}</div>`; s.innerHTML = h; })();
 render();
 </script>
