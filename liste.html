@@ -173,16 +173,16 @@
             <div class="customer-row">
                 <div class="avatar" id="customerInitial">M</div>
                 <div class="customer-info">
-                    <div class="customer-name" id="customerName">Mehmet Demir</div>
-                    <div class="customer-phone" id="customerPhone">+90 541 555 12 12</div>
+                    <div class="customer-name" id="customerName">Müşteri</div>
+                    <div class="customer-phone" id="customerPhone">-</div>
                 </div>
-                <div class="customer-time" id="listTime">2 saat önce</div>
+                <div class="customer-time" id="listTime">-</div>
             </div>
         </div>
 
         <div class="items-header">
             📋 İlgilendiği Ürünler
-            <span class="badge" id="itemCount">3 ürün</span>
+            <span class="badge" id="itemCount">0 ürün</span>
         </div>
 
         <div id="itemsContainer"></div>
@@ -201,43 +201,48 @@
 </div>
 
 <script>
-const listData = {
-    listCode: "abc123def456",
-    customer: { name: "Mehmet Demir", phone: "905415551212", date: new Date(Date.now() - 2*60*60*1000) },
-    items: [
-        {
-            code: "AYK-001", model: "Luna Slingback", brand: "Luna", size: "36-40",
-            colors: [
-                "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop",
-                "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=200&h=200&fit=crop",
-                "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=200&h=200&fit=crop"
-            ]
-        },
-        {
-            code: "AYK-002", model: "Nova Flat", brand: "Nova", size: "35-39",
-            colors: [
-                "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=200&h=200&fit=crop",
-                "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop"
-            ]
-        },
-        {
-            code: "AYK-004", model: "Aura Boot", brand: "Aura", size: "36-41",
-            colors: [
-                "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=200&h=200&fit=crop",
-                "https://images.unsplash.com/photo-1584735175097-719d848f8449?w=200&h=200&fit=crop",
-                "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=200&h=200&fit=crop",
-                "https://images.unsplash.com/photo-1514989940723-e8e51635b782?w=200&h=200&fit=crop"
-            ]
-        }
-    ]
-};
+// URL'den liste kodunu al
+let urlParams = new URLSearchParams(window.location.search);
+let listCode = urlParams.get('code');
+
+// localStorage'dan liste verisini çek
+let savedData = localStorage.getItem('list_' + listCode);
+let listData;
+
+if (savedData) {
+    listData = JSON.parse(savedData);
+} else {
+    // Demo yedek veri
+    listData = {
+        listCode: listCode || "demo123456",
+        customer: { name: "Mehmet Demir", phone: "905415551212", date: new Date(Date.now() - 2*60*60*1000).toISOString() },
+        items: [
+            {
+                code: "AYK-001", model: "Luna Slingback", brand: "Luna", size: "36-40",
+                colors: [
+                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=200&h=200&fit=crop"
+                ]
+            },
+            {
+                code: "AYK-002", model: "Nova Flat", brand: "Nova", size: "35-39",
+                colors: [
+                    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=200&h=200&fit=crop"
+                ]
+            }
+        ]
+    };
+}
 
 function render() {
+    let d = new Date(listData.customer.date);
     document.getElementById('listCode').textContent = '#' + listData.listCode.slice(0, 6);
-    document.getElementById('customerInitial').textContent = listData.customer.name.charAt(0).toUpperCase();
-    document.getElementById('customerName').textContent = listData.customer.name;
-    document.getElementById('customerPhone').textContent = formatPhone(listData.customer.phone);
-    document.getElementById('listTime').textContent = timeAgo(listData.customer.date);
+    document.getElementById('customerInitial').textContent = (listData.customer.name || 'M').charAt(0).toUpperCase();
+    document.getElementById('customerName').textContent = listData.customer.name || 'Müşteri';
+    document.getElementById('customerPhone').textContent = listData.customer.phone ? formatPhone(listData.customer.phone) : '-';
+    document.getElementById('listTime').textContent = timeAgo(d);
     document.getElementById('itemCount').textContent = listData.items.length + ' ürün';
 
     document.getElementById('itemsContainer').innerHTML = listData.items.map((item, i) => `
@@ -255,12 +260,23 @@ function render() {
     `).join('');
 }
 
-function formatPhone(p) { return p.replace(/(\d{2})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 $2 $3 $4 $5'); }
-function timeAgo(d) { let m = Math.floor((Date.now()-d)/60000); if (m<60) return m+' dk önce'; let h = Math.floor(m/60); if (h<24) return h+' saat önce'; return Math.floor(h/24)+' gün önce'; }
+function formatPhone(p) { 
+    if (!p) return '-';
+    return p.replace(/(\d{2})(\d{3})(\d{3})(\d{2})(\d{2})/, '+$1 $2 $3 $4 $5'); 
+}
+function timeAgo(d) { 
+    if (!d || isNaN(d.getTime())) return '-';
+    let m = Math.floor((Date.now()-d)/60000); 
+    if (m<60) return m+' dk önce'; 
+    let h = Math.floor(m/60); 
+    if (h<24) return h+' saat önce'; 
+    return Math.floor(h/24)+' gün önce'; 
+}
 
 function contactCustomer() {
-    let msg = `Merhaba ${listData.customer.name},\n\nİlgilendiğiniz ürünlerle ilgili yazmıştınız.\n\nSize nasıl yardımcı olabilirim?`;
-    window.open(`https://wa.me/${listData.customer.phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    let msg = `Merhaba ${listData.customer.name || 'Müşteri'},\n\nİlgilendiğiniz ürünlerle ilgili yazmıştınız.\n\nSize nasıl yardımcı olabilirim?`;
+    let phone = listData.customer.phone || '905383573785';
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 render();
