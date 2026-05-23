@@ -281,20 +281,53 @@ function sendWhatsApp() {
     btn.classList.add('sent');
     
     let items = models.flatMap(m => m.colors.filter(c => selected.has(c.id)).map(c => ({ model:m, color:c })));
-    let text = items.map(({model,color}) => `• ${model.modelName} - ${color.name} (${model.brand}, ${model.sizeRange})`).join('\n');
+
+    // Benzersiz liste kodu oluştur (12 karakter)
+    let listCode = generateListCode();
+    
+    // Liste verisini oluştur
+    let listData = {
+        listCode: listCode,
+        customer: { name: "Müşteri", phone: "", date: new Date().toISOString() },
+        items: items.map(({model,color}) => ({
+            code: model.code || model.modelName,
+            model: model.modelName,
+            brand: model.brand,
+            size: model.sizeRange,
+            selectedColor: color.name,
+            colors: model.colors.filter(c => c.inStock).map(c => c.imageUrl || `https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop`)
+        }))
+    };
+    
+    // Liste verisini localStorage'a kaydet (demo için)
+    localStorage.setItem('list_' + listCode, JSON.stringify(listData));
+    
+    // Liste linkini oluştur
+    let baseUrl = window.location.href.replace('katalog.html', '');
+    let listUrl = baseUrl + 'liste.html?code=' + listCode;
     
     // 3 ve altı ürün → isimler + link, 4 ve üstü → sadece link
     let message;
     if (items.length <= 3) {
-        message = `Merhaba,\n\nŞu ürünlerle ilgileniyorum:\n\n${text}\n\nsanalkatalog.com/ceylanlar`;
+        let text = items.map(({model,color}) => `• ${model.modelName} - ${color.name} (${model.brand}, ${model.sizeRange})`).join('\n');
+        message = `Merhaba,\n\nŞu ürünlerle ilgileniyorum:\n\n${text}\n\n${listUrl}`;
     } else {
-        message = `Merhaba,\n\n${items.length} ürünle ilgileniyorum. Listeye göz atar mısınız?\n\nsanalkatalog.com/ceylanlar`;
+        message = `Merhaba,\n\n${items.length} ürünle ilgileniyorum. Listeye göz atar mısınız?\n\n${listUrl}`;
     }
     
     setTimeout(() => {
         window.open('https://wa.me/905383573785?text=' + encodeURIComponent(message), '_blank');
         setTimeout(() => { btn.classList.remove('sent'); }, 2000);
     }, 500);
+}
+
+function generateListCode() {
+    let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let code = '';
+    for (let i = 0; i < 12; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
 }
 (function() { let s = document.getElementById('bbSlider'); let h = ''; for (let i=0; i<=20; i++) h += `<div class="bb-num-item">${i}</div>`; s.innerHTML = h; })();
 render();
