@@ -169,6 +169,39 @@
 </div>
 
 <script>
+    // Supabase bağlantısı
+const SUPABASE_URL = "https://hbjajdzjtwoeicoicpag.supabase.co";
+const SUPABASE_KEY = "sb_publishable_wCAoVwgRF-tuMkHTH1JZ_g_ce13GOdH";
+
+async function fetchProducts() {
+    try {
+        let response = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*,variations(*)&is_hidden=eq.false`, {
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`
+            }
+        });
+        let data = await response.json();
+        // Supabase verisini models formatına dönüştür
+        return data.map(p => ({
+            id: p.id,
+            modelName: p.name,
+            brand: p.brand || '',
+            sizeRange: p.size_range || '36-40',
+            code: p.code,
+            tags: p.tags || [],
+            colors: (p.variations || []).map(v => ({
+                id: v.id,
+                name: v.color_name || '',
+                inStock: v.is_in_stock,
+                imageUrl: v.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop'
+            }))
+        }));
+    } catch(e) {
+        console.log('Supabase bağlantısı kurulamadı, demo veriler kullanılıyor');
+        return null;
+    }
+}
 const models = [
     { id: 1, modelName: 'Luna Slingback', brand: 'Luna', sizeRange: '36-40', code: 'AYK-001', tags: ['Yaz','Topuklu'], colors: [
         { id: 1, name: 'Siyah', inStock: true, imageUrl: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop' },
@@ -229,7 +262,14 @@ function updateAllAddButtons() {
     });
 }
 
-function render() {
+async function render() {
+    // Supabase'den verileri çek
+    let supabaseData = await fetchProducts();
+    if (supabaseData) {
+        models.length = 0;
+        models.push(...supabaseData);
+    }
+    
     let query = document.getElementById('searchInput').value.toLowerCase();
     let filtered = models.filter(m => {
         if (query && !m.modelName.toLowerCase().includes(query) && !m.brand.toLowerCase().includes(query)) return false;
